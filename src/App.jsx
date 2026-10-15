@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+import Books from './Books';
 
 const API_URL = 'https://library-management-system-3-0okb.onrender.com';
 
@@ -10,6 +11,7 @@ function App() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState('dashboard');
 
   useEffect(() => {
     async function fetchLibraryData() {
@@ -24,7 +26,11 @@ function App() {
             fetch(`${API_URL}/api/issues`),
           ]);
 
-        if (!booksResponse.ok || !studentsResponse.ok || !issuesResponse.ok) {
+        if (
+          !booksResponse.ok ||
+          !studentsResponse.ok ||
+          !issuesResponse.ok
+        ) {
           throw new Error('Unable to retrieve library data from the backend.');
         }
 
@@ -58,14 +64,54 @@ function App() {
     (issue) => issue.returnDate == null
   ).length;
 
+  // Display the Books Management page
+  if (currentPage === 'books') {
+    return (
+      <div>
+        <button
+          onClick={() => setCurrentPage('dashboard')}
+          style={{
+            margin: '20px',
+            padding: '10px 16px',
+            cursor: 'pointer',
+            border: 'none',
+            borderRadius: '6px',
+            background: '#e9edf5',
+          }}
+        >
+          ← Back to Dashboard
+        </button>
+
+        <Books />
+      </div>
+    );
+  }
+
+  // Dashboard
   return (
     <div className="app">
       <aside className="sidebar">
         <h2 className="logo">📚 LibraryHub</h2>
 
         <nav>
-          <a href="#dashboard" className="active">🏠 Dashboard</a>
-          <a href="#books">📖 Books</a>
+          <a
+            href="#dashboard"
+            className="active"
+            onClick={() => setCurrentPage('dashboard')}
+          >
+            🏠 Dashboard
+          </a>
+
+          <a
+            href="#books"
+            onClick={(event) => {
+              event.preventDefault();
+              setCurrentPage('books');
+            }}
+          >
+            📖 Books
+          </a>
+
           <a href="#students">👨‍🎓 Students</a>
           <a href="#issues">📋 Issue & Return</a>
         </nav>
@@ -81,6 +127,7 @@ function App() {
             <h1>Dashboard</h1>
             <p>Welcome to your Library Management System!</p>
           </div>
+
           <div className="admin-badge">👤 Administrator</div>
         </header>
 
@@ -92,6 +139,7 @@ function App() {
               in one place.
             </p>
           </div>
+
           <div className="banner-icon">📚</div>
         </section>
 
@@ -138,14 +186,12 @@ function App() {
             <div className="panel-heading">
               <h2>📖 Book Management</h2>
             </div>
+
             <p>Manage books stored in your library database.</p>
             <p>Total books: {books.length}</p>
-            <button onClick={() => alert(
-              books.length
-                ? `Books found: ${books.length}. Full book management is the next step.`
-                : 'No books found in the database.'
-            )}>
-              View Books →
+
+            <button onClick={() => setCurrentPage('books')}>
+              Manage Books →
             </button>
           </div>
 
@@ -153,14 +199,16 @@ function App() {
             <div className="panel-heading">
               <h2>🎓 Student Management</h2>
             </div>
+
             <p>View registered students in your library database.</p>
             <p>Total students: {students.length}</p>
-            <button onClick={() => alert(
-              students.length
-                ? `Students found: ${students.length}. Full student management is the next step.`
-                : 'No students found in the database.'
-            )}>
-              View Students →
+
+            <button
+              onClick={() =>
+                alert('Student Management is the next step!')
+              }
+            >
+              Manage Students →
             </button>
           </div>
 
@@ -168,14 +216,16 @@ function App() {
             <div className="panel-heading">
               <h2>📋 Issue & Return</h2>
             </div>
+
             <p>Track borrowed and returned books.</p>
             <p>Currently issued: {currentlyIssued}</p>
-            <button onClick={() => alert(
-              issues.length
-                ? `Issue records found: ${issues.length}. Full issue management is the next step.`
-                : 'No issue records found.'
-            )}>
-              View Issues →
+
+            <button
+              onClick={() =>
+                alert('Issue & Return Management is the next step!')
+              }
+            >
+              Manage Issues →
             </button>
           </div>
         </section>
