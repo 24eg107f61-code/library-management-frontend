@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import Books from './Books';
 import Students from './Students';
+import Issues from './Issues';
 
 const API_URL = 'https://library-management-system-3-0okb.onrender.com';
 
@@ -58,11 +59,11 @@ function App() {
   }, []);
 
   const returnedIssues = issues.filter(
-    (issue) => issue.returnDate != null
+    (issue) => issue.actualReturnDate != null
   ).length;
 
   const currentlyIssued = issues.filter(
-    (issue) => issue.returnDate == null
+    (issue) => issue.actualReturnDate == null
   ).length;
 
   // Books Management page
@@ -71,14 +72,7 @@ function App() {
       <div>
         <button
           onClick={() => setCurrentPage('dashboard')}
-          style={{
-            margin: '20px',
-            padding: '10px 16px',
-            cursor: 'pointer',
-            border: 'none',
-            borderRadius: '6px',
-            background: '#e9edf5',
-          }}
+          style={backButtonStyle}
         >
           ← Back to Dashboard
         </button>
@@ -94,14 +88,7 @@ function App() {
       <div>
         <button
           onClick={() => setCurrentPage('dashboard')}
-          style={{
-            margin: '20px',
-            padding: '10px 16px',
-            cursor: 'pointer',
-            border: 'none',
-            borderRadius: '6px',
-            background: '#e9edf5',
-          }}
+          style={backButtonStyle}
         >
           ← Back to Dashboard
         </button>
@@ -111,7 +98,23 @@ function App() {
     );
   }
 
-  // Dashboard
+  // Issue and Return Management page
+  if (currentPage === 'issues') {
+    return (
+      <div>
+        <button
+          onClick={() => setCurrentPage('dashboard')}
+          style={backButtonStyle}
+        >
+          ← Back to Dashboard
+        </button>
+
+        <Issues />
+      </div>
+    );
+  }
+
+  // Main Dashboard
   return (
     <div className="app">
       <aside className="sidebar">
@@ -153,10 +156,7 @@ function App() {
             href="#issues"
             onClick={(event) => {
               event.preventDefault();
-              setCurrentPage('dashboard');
-              document
-                .getElementById('issues')
-                ?.scrollIntoView({ behavior: 'smooth' });
+              setCurrentPage('issues');
             }}
           >
             📋 Issue & Return
@@ -229,6 +229,7 @@ function App() {
         </section>
 
         <section className="content-grid">
+          {/* Book Management */}
           <div className="panel" id="books">
             <div className="panel-heading">
               <h2>📖 Book Management</h2>
@@ -242,6 +243,7 @@ function App() {
             </button>
           </div>
 
+          {/* Student Management */}
           <div className="panel" id="students">
             <div className="panel-heading">
               <h2>🎓 Student Management</h2>
@@ -255,6 +257,7 @@ function App() {
             </button>
           </div>
 
+          {/* Issue and Return Management */}
           <div className="panel" id="issues">
             <div className="panel-heading">
               <h2>📋 Issue & Return</h2>
@@ -263,11 +266,7 @@ function App() {
             <p>Track borrowed and returned books.</p>
             <p>Currently issued: {currentlyIssued}</p>
 
-            <button
-              onClick={() =>
-                alert('Issue & Return Management is our next step!')
-              }
-            >
+            <button onClick={() => setCurrentPage('issues')}>
               Manage Issues →
             </button>
           </div>
@@ -280,5 +279,14 @@ function App() {
     </div>
   );
 }
+
+const backButtonStyle = {
+  margin: '20px',
+  padding: '10px 16px',
+  cursor: 'pointer',
+  border: 'none',
+  borderRadius: '6px',
+  background: '#e9edf5',
+};
 
 export default App;
