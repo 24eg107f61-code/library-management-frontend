@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import Books from './Books';
+import Students from './Students';
 
 const API_URL = 'https://library-management-system-3-0okb.onrender.com';
 
@@ -64,7 +65,7 @@ function App() {
     (issue) => issue.returnDate == null
   ).length;
 
-  // Display the Books Management page
+  // Books Management page
   if (currentPage === 'books') {
     return (
       <div>
@@ -87,6 +88,29 @@ function App() {
     );
   }
 
+  // Students Management page
+  if (currentPage === 'students') {
+    return (
+      <div>
+        <button
+          onClick={() => setCurrentPage('dashboard')}
+          style={{
+            margin: '20px',
+            padding: '10px 16px',
+            cursor: 'pointer',
+            border: 'none',
+            borderRadius: '6px',
+            background: '#e9edf5',
+          }}
+        >
+          ← Back to Dashboard
+        </button>
+
+        <Students />
+      </div>
+    );
+  }
+
   // Dashboard
   return (
     <div className="app">
@@ -97,7 +121,10 @@ function App() {
           <a
             href="#dashboard"
             className="active"
-            onClick={() => setCurrentPage('dashboard')}
+            onClick={(event) => {
+              event.preventDefault();
+              setCurrentPage('dashboard');
+            }}
           >
             🏠 Dashboard
           </a>
@@ -112,8 +139,28 @@ function App() {
             📖 Books
           </a>
 
-          <a href="#students">👨‍🎓 Students</a>
-          <a href="#issues">📋 Issue & Return</a>
+          <a
+            href="#students"
+            onClick={(event) => {
+              event.preventDefault();
+              setCurrentPage('students');
+            }}
+          >
+            👨‍🎓 Students
+          </a>
+
+          <a
+            href="#issues"
+            onClick={(event) => {
+              event.preventDefault();
+              setCurrentPage('dashboard');
+              document
+                .getElementById('issues')
+                ?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            📋 Issue & Return
+          </a>
         </nav>
 
         <div className="sidebar-footer">
@@ -200,14 +247,10 @@ function App() {
               <h2>🎓 Student Management</h2>
             </div>
 
-            <p>View registered students in your library database.</p>
+            <p>Manage students stored in your library database.</p>
             <p>Total students: {students.length}</p>
 
-            <button
-              onClick={() =>
-                alert('Student Management is the next step!')
-              }
-            >
+            <button onClick={() => setCurrentPage('students')}>
               Manage Students →
             </button>
           </div>
@@ -222,7 +265,7 @@ function App() {
 
             <button
               onClick={() =>
-                alert('Issue & Return Management is the next step!')
+                alert('Issue & Return Management is our next step!')
               }
             >
               Manage Issues →
